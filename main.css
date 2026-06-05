@@ -1,0 +1,227 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fafafa;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.main-header {
+    width: 100%;
+    background-color: #75BAC1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-wrapper img {
+    display: block;
+    height: 40px;
+    width: auto;
+}
+
+.game-status {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #666;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tablero-grid {
+    display: grid;
+    margin: 30px 15px;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 1 / 1;
+}
+
+.grid-cell {
+    width: 100%;
+    height: 100%;
+}
+
+.card-vacia {
+    visibility: hidden;
+}
+
+.card-base {
+    display: flex;
+    border: 3px solid #FFC0CB;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #F5F5DC;
+    width: 100%;
+    height: 100%;
+}
+
+.cuadrado-txt {
+    font-family: 'Mouse Memoirs', sans-serif;
+    font-size: 3rem;
+    font-weight: normal;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+}
+
+.card-eje-x .cuadrado-txt,
+.card-eje-y .cuadrado-txt {
+    flex: 7;
+}
+
+.card-eje-x { flex-direction: column; }
+.rectangulo-abajo {
+    flex: 3;
+    width: 100%;
+    background-color: #E0F7FA;
+    border-top: 2px solid #FFC0CB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+.rectangulo-abajo span {
+    background-color: #FFFFFF;
+    width: 90%;
+    padding: 2px 0;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-eje-y { flex-direction: row; }
+.rectangulo-derecha {
+    flex: 3;
+    height: 100%;
+    background-color: #E0F7FA;
+    border-left: 2px solid #FFC0CB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+.rectangulo-derecha span {
+    background-color: #FFFFFF;
+    height: 90%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    writing-mode: sideways-lr;
+    vertical-align: middle;
+    text-orientation: mixed;
+    white-space: nowrap;
+}
+
+.flip-container {
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.flip-container.volteada .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.face-front, .face-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border: 3px solid #FFC0CB;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.face-front {
+    background-color: #FFFFFF;
+}
+
+.face-front .cuadrado-txt {
+    font-size: 3rem;
+}
+
+.face-back {
+    transform: rotateY(180deg);
+    flex-direction: column;
+}
+
+.estado-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.estado-indicador {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.face-back.correcto {
+    background-color: #4CAF50;
+    border-color: #2E7D32;
+}
+
+.face-back.incorrecto {
+    background-color: #F44336;
+    border-color: #C62828;
+}
+
+@media (max-width: 500px) {
+    .tablero-grid { gap: 5px; }
+    .cuadrado-txt { font-size: 1.8rem; }
+    .face-front .cuadrado-txt { font-size: 1.8rem; }
+    .estado-icon { font-size: 1.6rem; }
+    .estado-indicador { font-size: 0.5rem; }
+    .rectangulo-abajo span, .rectangulo-derecha span { font-size: 0.55rem; }
+}
