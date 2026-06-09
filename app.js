@@ -16,7 +16,7 @@ const db = getDatabase(app);
 const isNewGame = !window.location.hash;
 
 if(isNewGame) {
-    window.location.hash = new Date().getTime().toString();
+    window.location.hash = (new Date().getTime() * Math.floor(Math.random() + 1)).toString();
 }
 
 const gameId = window.location.hash.slice(1);
