@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, get, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, set, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkV0BJCdFnIpJ9cVKAPRruXiga7mHs2Eg",
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
 
-        const config = {};
+        const gameRef = ref(db, `games/${gameId}`);
 
         if(isNewGame) {
             const response = await fetch('./words.json');
@@ -43,25 +43,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const xWords = words.slice(0, 5);
             const yWords = words.slice(5, 10);
 
-            config.gameRef = ref(db, 'games/' + gameId);
-            set(config.gameRef, {
+            set(gameRef, {
                 xWords: xWords,
                 yWords: yWords,
                 finished: ''
-            }).then(() => {
-                //setWords(xWords, yWords);
             }).catch((error) => {
-                console.error("Error al guardar:", error);
+                console.error("Error saving new game: ", error);
             });
-        } else {
-            config.gameRef = ref(db, 'games/' + gameId);
         }
 
-        onValue(config.gameRef, (snapshot) => {
-            const data = snapshot.val();
-            console.log("Real-time data:", data);
+        onValue(gameRef, (snapshot) => {
             if (snapshot.exists()) {
-                setWords(snapshot.child("xWords").val(), snapshot.child("yWords").val());
+                const data = snapshot.val();
+                setWords(data.xWords, data.yWords);
                 const coordinates = data.finished.split(";");
                 document.querySelectorAll('.turnable').forEach((element) => {
                     let force = coordinates.includes(element.id);
@@ -77,38 +71,39 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }, 300);
                 }
             } else {
-                console.log("No data available at this path.");
+                window.location.replace(window.location.pathname);
             }
         });
 
     } catch (error) {
         console.error("Error al cargar las palabras desde el JSON:", error);
     }
+
+    const setWords = (palabrasX, palabrasY) => {
+        document.querySelectorAll('.palabra-x').forEach((span, index) => {
+            span.textContent = palabrasX[index] || "---";
+        });
+
+        document.querySelectorAll('.palabra-y').forEach((span, index) => {
+            span.textContent = palabrasY[index] || "---";
+        });
+    }
+
+    const onCardClicked = (element) => {
+        const finishedRef = ref(db, `games/${gameId}/finished`);
+        runTransaction(finishedRef, (currentValue) => {
+            if (currentValue === null || currentValue.length === 0) {
+                return element.id;
+            } else {
+                const finishedOnes = currentValue.split(";");
+                if(finishedOnes.includes(element.id)) {
+                    finishedOnes.splice(finishedOnes.indexOf(element.id), 1);
+                } else {
+                    finishedOnes.push(element.id);
+                }
+                return finishedOnes.sort().join(";");
+            }
+        });
+    }
 });
 
-function setWords(palabrasX, palabrasY) {
-    document.querySelectorAll('.palabra-x').forEach((span, indice) => {
-        span.textContent = palabrasX[indice] || "---";
-    });
-
-    document.querySelectorAll('.palabra-y').forEach((span, indice) => {
-        span.textContent = palabrasY[indice] || "---";
-    });
-}
-
-function onCardClicked(element) {
-    const finishedRef = ref(db, 'games/' + gameId + '/finished');
-    runTransaction(finishedRef, (currentValue) => {
-        if (currentValue === null || currentValue.length === 0) {
-            return element.id;
-        } else {
-            const finishedOnes = currentValue.split(";");
-            if(finishedOnes.includes(element.id)) {
-                finishedOnes.splice(finishedOnes.indexOf(element.id), 1);
-            } else {
-                finishedOnes.push(element.id);
-            }
-            return finishedOnes.sort().join(";");
-        }
-    });
-}

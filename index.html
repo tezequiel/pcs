@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pistas Cruzadas</title>
+    <link href="favicon.png" rel="icon">
     <link rel="stylesheet" href="main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mouse+Memoirs&family=Sansita+Swashed:wght@300..900&display=swap" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css2?family=Mouse+Memoirs&family=Sansita+Swashed:wght@300..900&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="tablero-grid">
 
-    <div class="grid-cell"><img src="https://cdnx.jumpseller.com/atomic-rainbow/image/41154039/resize/610/610?1724161834" width="100%" onclick="javascript:window.location.replace('/')" style="cursor: pointer"></div>
+    <div class="grid-cell"><img src="logo.png" width="100%" onclick="javascript:window.location.replace(window.location.pathname)" style="cursor: pointer"></div>
 
     <div class="grid-cell card-base card-eje-x"><div class="cuadrado-txt">A</div><div class="rectangulo-abajo"><span class="palabra-x">...</span></div></div>
     <div class="grid-cell card-base card-eje-x"><div class="cuadrado-txt">B</div><div class="rectangulo-abajo"><span class="palabra-x">...</span></div></div>
@@ -57,7 +58,7 @@
     <div class="grid-cell flip-container turnable" id="e5"><div class="flip-card-inner"><div class="face-front"><div class="cuadrado-txt">E5</div></div><div class="face-back correcto"><div class="estado-icon">✅</div></div></div></div>
 
 </div>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="app.js" type="module"></script>
 </body>
 </html>
