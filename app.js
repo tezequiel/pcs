@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, set, runTransaction, serverTimestamp, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAkV0BJCdFnIpJ9cVKAPRruXiga7mHs2Eg",
@@ -71,9 +71,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const yWords = words.slice(5, 10);
 
             set(gameRef, {
+                createdAt: serverTimestamp(),
                 xWords: xWords,
                 yWords: yWords,
-                finished: ''
+                finished: '',
+                missCount: 0
             }).catch((error) => {
                 console.error("Error saving new game: ", error);
             });
@@ -83,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 setWords(data.xWords, data.yWords);
+                updateCounter(data.missCount);
                 const coordinates = data.finished.split(";");
                 document.querySelectorAll('.turnable').forEach((element) => {
                     let force = coordinates.includes(element.id);
@@ -105,5 +108,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error("Error al cargar las palabras desde el JSON:", error);
     }
-});
 
+    const missCounter = document.getElementById('missCounter');
+
+    const updateCounter = (value) => {
+        missCounter.textContent = value;
+        const missCountRef = ref(db, `games/${gameId}/missCount`);
+        runTransaction(missCountRef, () => {
+            return value;
+        });
+        if (value === 0) {
+            missCounter.classList.remove('state-active');
+            missCounter.classList.add('state-zero');
+        } else {
+            missCounter.classList.remove('state-zero');
+            missCounter.classList.add('state-active');
+        }
+    }
+
+    document.getElementById('btn-increment').addEventListener('click', () => {
+        if (Number(missCounter.textContent) < 25) {
+            updateCounter(Number(missCounter.textContent) + 1);
+        }
+    });
+
+    document.getElementById('btn-decrement').addEventListener('click', () => {
+        if (Number(missCounter.textContent) > 0) {
+            updateCounter(Number(missCounter.textContent) - 1);
+        }
+    });
+});

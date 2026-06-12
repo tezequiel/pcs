@@ -217,6 +217,57 @@ body {
     border-color: #C62828;
 }
 
+/* Contenedor principal alineado horizontalmente */
+.counter-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre los componentes */
+}
+
+/* Estilo para los botones redondeados */
+.btn-counter {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    background-color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    user-select: none; /* Evita que se seleccione el texto al hacer click rápido */
+}
+
+/* Efecto hover para los botones */
+.btn-counter:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Estilo del bloque counter */
+.counter-display {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    min-width: 30px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+/* Clases dinámicas de color */
+.state-zero {
+    background-color: #2ecc71; /* Verde */
+}
+
+.state-active {
+    background-color: #e74c3c; /* Rojo */
+}
+
 @media (max-width: 500px) {
     .tablero-grid { gap: 5px; }
     .cuadrado-txt { font-size: 1.8rem; }
