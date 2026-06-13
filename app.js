@@ -19,8 +19,6 @@ if(isNewGame) {
     window.location.hash = (new Date().getTime() * Math.floor(Math.random() + 1)).toString();
 }
 
-const gameId = window.location.hash.slice(1);
-
 document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('.turnable').forEach((turnable) => {
         turnable.onclick = () => onCardClicked(turnable);
@@ -35,6 +33,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             span.textContent = palabrasY[index] || "---";
         });
     }
+
+    const gameId = window.location.hash.slice(1);
 
     const onCardClicked = (element) => {
         const finishedRef = ref(db, `games/${gameId}/finished`);
@@ -52,6 +52,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
+
+    const missCounter = document.getElementById('missCounter');
+
+    const updateCounter = (value) => {
+        missCounter.textContent = value;
+        const missCountRef = ref(db, `games/${gameId}/missCount`);
+        runTransaction(missCountRef, () => {
+            return value;
+        });
+        if (value === 0) {
+            missCounter.classList.remove('state-active');
+            missCounter.classList.add('state-zero');
+        } else {
+            missCounter.classList.remove('state-zero');
+            missCounter.classList.add('state-active');
+        }
+    }
+
+    document.getElementById('btn-increment').addEventListener('click', () => {
+        if (Number(missCounter.textContent) < 25) {
+            updateCounter(Number(missCounter.textContent) + 1);
+        }
+    });
+
+    document.getElementById('btn-decrement').addEventListener('click', () => {
+        if (Number(missCounter.textContent) > 0) {
+            updateCounter(Number(missCounter.textContent) - 1);
+        }
+    });
 
     try {
 
@@ -99,6 +128,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             origin: { y: 0.6 }
                         });
                     }, 300);
+                } else if(coordinates.length === 24) {
+                    document.querySelector('.turnable:not(.volteada)').click();
                 }
             } else {
                 window.location.replace(window.location.pathname);
@@ -108,33 +139,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error("Error al cargar las palabras desde el JSON:", error);
     }
-
-    const missCounter = document.getElementById('missCounter');
-
-    const updateCounter = (value) => {
-        missCounter.textContent = value;
-        const missCountRef = ref(db, `games/${gameId}/missCount`);
-        runTransaction(missCountRef, () => {
-            return value;
-        });
-        if (value === 0) {
-            missCounter.classList.remove('state-active');
-            missCounter.classList.add('state-zero');
-        } else {
-            missCounter.classList.remove('state-zero');
-            missCounter.classList.add('state-active');
-        }
-    }
-
-    document.getElementById('btn-increment').addEventListener('click', () => {
-        if (Number(missCounter.textContent) < 25) {
-            updateCounter(Number(missCounter.textContent) + 1);
-        }
-    });
-
-    document.getElementById('btn-decrement').addEventListener('click', () => {
-        if (Number(missCounter.textContent) > 0) {
-            updateCounter(Number(missCounter.textContent) - 1);
-        }
-    });
 });
